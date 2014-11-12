@@ -1,0 +1,24 @@
+<html>
+  <head></head>
+  <body></body>
+  <script>
+  chrome.extension.onRequest.addListener(function(dom, sender, senResponse){
+
+
+    //it sould be opening a new tab fot this html
+    doms.forEach(function(dom){
+      var newA = document.createElement('a');
+      newA.setAttribute('id', ('dom'+index+''));
+      newA.setAttribute('href', dom.link);
+      document.body.appendChild( newA );
+
+      var newImg = document.createElement('img');
+      newImg.setAttribute('width', dom.width+'px');
+      newImg.setAttribute('height',dom.height+'px');
+      newImg.style.background = 'url('+dom.dataURL+')';
+      newA.appendChild( newImg );
+    });
+    sendResponse();
+  });
+  </script>
+</html>
