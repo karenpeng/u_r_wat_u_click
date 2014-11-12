@@ -1,52 +1,61 @@
 <head>
   <style type="text/css">
-    a{
+    #whatever{
       background-color: green
     }
   </style>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 </head>
 <body>
-  <div id="hi"></div>
+  <button id="show">Show Img</button>
   <p>heoolooo</p>
   <a href="#" id="whatever">Create</a>
 </body>
 <script type="text/javascript" src="script/html2canvas.js"></script>
 <script type="text/javascript">
-var longDom = [];
+
+var doms = [];
+var index = 0;
 $("document").ready(function () {
 
   //change cursor
   //$("body").css("cursor", "url('" + chrome.extension.getURL('glitter_cursor.gif') + "'), default");
   $(document).click(function(e){
-    //console.log($(e.target));
-    if($(e.target).is('a')){
-      var content = $(e.target).context.innerHTML;
-      var link = $(e.target).context.href;
-      var identification = $(e.target).context.id;
+    if($(e.target).is('a') || $(e.target).is('button')){
+      var padding = $(e.target).context.
       var w = $(e.target).width();
       var h = $(e.target).height();
-      //console.log(content, link);
-       var element = document.getElementById(identification);
-      // var css = window.getComputedStyle(element);
-      // var styles = [];
-      // for (var i=0; i<css.length; i++) {
-      //     console.log(css[i] +'='+css.getPropertyValue(""+css[i]));
-      //     styles.push([css[i],css.getPropertyValue(""+css[i])]);
-      // }
-      // var domObj = {
-      //   'content': content,
-      //   'link': link,
-      //   'style': styles
-      // };
-      // //console.log(domObj);
-      // longDom.push(domObj);
       html2canvas($(e.target), {
         onrendered: function(canvas) {
-          document.body.appendChild(canvas);
+          //document.body.appendChild(canvas);
+          var dataURL = canvas.toDataURL();
+          //console.log(dataURL);
+          var dom = {
+            'link': link,
+            'dataURL': dataURL,
+            'width': w,
+            'height': h
+          };
+          doms.push(dom);
          }
       });
      }
+  });
+
+  $("#show").click(function(){
+    doms.forEach(function(dom){
+      var newA = document.createElement('a');
+      newA.setAttribute('id', ('dom'+index+''));
+      newA.setAttribute('href', dom.link);
+      document.body.appendChild( newA );
+
+      var newImg = document.createElement('img');
+      newImg.setAttribute('width', dom.width+'px');
+      newImg.setAttribute('height',dom.height+'px');
+      newImg.style.background = 'url('+dom.dataURL+')';
+      newA.appendChild( newImg );
+
+    })
   });
 
 
