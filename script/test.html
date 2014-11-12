@@ -1,0 +1,23 @@
+<head>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+</head>
+<body>
+<div id="hi"></div>
+<p>heoolooo</p>
+</body>
+<script type="text/javascript">
+$("document").ready(function () {
+
+  //change cursor
+  //$("body").css("cursor", "url('" + chrome.extension.getURL('glitter_cursor.gif') + "'), default");
+  $(document).click(function(e){
+    console.log($(e.target));
+  })
+//   var css = window.getComputedStyle(element);
+// for (var i=0; i<css.length; i++) {
+//     console.log(css[i] +'='+css.getPropertyValue(""+css[i]))
+// }
+
+});
+
+</script>
