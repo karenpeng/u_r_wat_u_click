@@ -1,73 +1,94 @@
-window.onload = function () {
+//window.onload = function () {
 
-  //change cursor
-  //$("body").css("cursor", "url('" + chrome.extension.getURL('glitter_cursor.gif') + "'), default");
+var doms = [];
+var record = false;
 
-  chrome.runtime.onMessage.addListener(
-    function (request, sender, sendResponse) {
-      console.log(request.dom);
-      // if (request.greeting == "goodbye") {
-      //   recording = false;
-      // }
-      sendResponse({
-        'ok': 'ok'
+//tell every new tab the stats of recording
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+  chrome.tabs.query({
+    active: true,
+    currentWindow: true
+  }, function (tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, {
+      'recording': record
+    }, function (response) {
+      console.log(response);
+    });
+  });
+});
+
+chrome.tabs.onCreated.addListener(function (tabId, changeInfo, tab) {
+  chrome.tabs.query({
+    active: true,
+    currentWindow: true
+  }, function (tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, {
+      'recording': record
+    }, function (response) {
+      console.log(response);
+    });
+  });
+});
+
+chrome.tabs.onActivated.addListener(function (tabId, changeInfo, tab) {
+  chrome.tabs.query({
+    active: true,
+    currentWindow: true
+  }, function (tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, {
+      'recording': record
+    }, function (response) {
+      console.log(response);
+    });
+  });
+});
+
+chrome.runtime.onMessage.addListener(
+  function (request, sender, sendResponse) {
+    console.log(request.dom);
+    doms.push(request.dom);
+  });
+
+chrome.browserAction.onClicked.addListener(function (tabs) {
+  record = !record;
+  console.log(record);
+  if (record) {
+    chrome.tabs.query({
+      active: true,
+      currentWindow: true
+    }, function (tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, {
+        'recording': record
+      }, function (response) {
+        console.log(response);
+      });
+    });
+  } else {
+    chrome.tabs.query({
+      active: true,
+      currentWindow: true
+    }, function (tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, {
+        'recording': record
+      }, function (response) {
+        console.log(response);
       });
     });
 
-  var record = false;
-  var doms = [];
-  chrome.browserAction.onClicked.addListener(function (tabs) {
-    record = !record;
-    console.log(record);
-    if (record) {
-      //trigger the recording
-      // chrome.tabs.executeScript(null, {
-      //   file: "script/record.js"
-      // });
-      // chrome.extension.sendRequest(true);
-      // chrome.runtime.sendMessage({
-      //     greeting: "hello"
-      //   },
-      //   function (response) {
-      //     //document.getElementById("div").textContent = response.msg;
-      //     console.log(response);
-      //   });
-      // chrome.tabs.sendMessage(tab.id, {
-      //   load: true
-      // }, function (response) { // We don't do anything if we don't have a response
-      //   if (response) {
-      //     console.log("Inside Background Response script, we had a response:");
-      //     //After successfully getting the response, we show a Page Action Icon.
-      //     chrome.pageAction.show(tab.id);
-      //   }
-      // });
-      //console.log("i should start recording");
+    chrome.tabs.create({
+      'url': chrome.extension.getURL('result.html')
+    }, function (tabs) {
+      console.log(tabs);
+      chrome.tabs.sendMessage(tabs[0].id, {
+        'doms': doms
+      }, function (response) {
+        console.log(response);
+      });
+    });
 
-      // document.onclick = function (e) {
-      //   console.log('click');
-      //   if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
-      //     console.log('yep');
-      //   }
-      // }
-    } else {
-      //open up a tab showing the result
-      // chrome.tabs.create({
-      //   url: chrome.extension.getURL('result.html')
-      // });
-      //chrome.extension.sendRequest(false);
-      //console.log("i should show you the result");
-      // chrome.runtime.sendMessage({
-      //     greeting: "goodbye"
-      //   },
-      //   function (response) {
-      //     //document.getElementById("div").textContent = response.msg;
-      //     console.log(response);
-      //   });
-    }
-    // chrome.tabs.executeScript(null, {
-    //   file: "script/content_script.js"
-    // });
-    //record();
-  });
+    doms = [];
+  }
 
-};
+});
+
+//};

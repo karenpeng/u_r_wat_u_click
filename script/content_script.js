@@ -1,49 +1,17 @@
-//------------------DOC READY-------------------//
 $("document").ready(function () {
 
-  //change cursor
-  //$("body").css("cursor", "url('" + chrome.extension.getURL('glitter_cursor.gif') + "'), default");
-  var doms = [];
-  var index = 0;
-  //var recording = false;
-  var recording = true;
-  // chrome.browserAction.onClicked.addListener(function (tabs) {
-  //   console.log("ouch!");
-  //   // chrome.tabs.executeScript(null, {
-  //   //   file: "script/content_script.js"
-  //   // });
-  //   record();
-  // });
-  //chrome.extension.onRequest.addListener(function(booleann, sender, senResponse){
-  // chrome.runtime.onMessage.addListener(
-  //   function (request, sender, sendResponse) {
-  //     console.log(request);
-  //     if (request.greeting == "hello") {
-  //       sendResponse({
-  //         msg: "goodbye!"
-  //       });
-  //       recording = true;
-  //     }
-  //   });
+  var recording = false;
+  //var recording = true;
 
-  //   chrome.runtime.onMessage.addListener(
-  //   function (request, sender, sendResponse) {
-  //     console.log(request);
-  //     if (request.greeting == "goodbye") {
-  //       recording = false;
-  //     }
-  //   });
-  // chrome.extension.onMessage.addListener(function (request, sender, sendResponse) {
-  //   if (request.load) {
-  //     var data = ... //Something from the page user browses.
-  //     sendResponse({
-  //         webpageContent: "data"
-  //       })
-  //       //return true;
-  //   }
+  //received message to record or not
+  chrome.runtime.onMessage.addListener(
+    function (request, sender, sendResponse) {
+      console.log(request.recording);
+      recording = request.recording;
+      sendResponse(recording);
+    });
 
   $(document).click(function (e) {
-    //received message
     if (recording) {
       if ($(e.target).is('a') || $(e.target).is('button')) {
         console.log("ouch!");
@@ -68,19 +36,14 @@ $("document").ready(function () {
               'y': e.pageY
             };
             console.log(dom);
-            doms.push(dom);
-            //chrome.extension.sendRequest(dom);
 
             chrome.runtime.sendMessage({
-                'dom': dom
-              },
-              function (response) {
-                //document.getElementById("div").textContent = response.msg;
-                console.log(response.ok);
-              });
+              'dom': dom
+            });
           }
         });
       }
     }
   });
+
 });
