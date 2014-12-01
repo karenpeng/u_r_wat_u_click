@@ -14,6 +14,8 @@ $("document").ready(function () {
     if (recording) {
       //if ($(e.target).is('a') || $(e.target).is('button')) {
       console.log("ouch!");
+      var tag = $(e.target).prop('tagName');
+      var src = $(e.target).attr('src');
       var link = $(e.target).context.href;
       var padding_top = $(e.target).css('padding-top');
       var padding_bottom = $(e.target).css('padding-bottom');
@@ -27,7 +29,9 @@ $("document").ready(function () {
           var dataURL = canvas.toDataURL();
           //console.log(dataURL);
           var dom = {
+            'tag': tag,
             'link': link,
+            'src': src,
             'dataURL': dataURL,
             'width': parseInt(w) + parseInt(padding_left) + parseInt(padding_right),
             'height': parseInt(h) + parseInt(padding_top) + parseInt(padding_bottom),
